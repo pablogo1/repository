@@ -12,11 +12,9 @@ namespace Repository.EF
         where TEntity : class
         where TId : struct
     {
-        private readonly Microsoft.EntityFrameworkCore.DbContext dbContext;
-
-        public ReadOnlyRepositoryAsync(Microsoft.EntityFrameworkCore.DbContext dbContext)
+        protected ReadOnlyRepositoryAsync(DbContext dbContext)
         {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public Task<IEnumerable<TEntity>> AllAsync()
@@ -43,6 +41,6 @@ namespace Repository.EF
 
         protected abstract IQueryable<TEntity> ObjectSet { get; }
 
-        protected Microsoft.EntityFrameworkCore.DbContext DbContext => dbContext;
+        protected DbContext DbContext { get; }
     }
 }

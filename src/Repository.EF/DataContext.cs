@@ -1,14 +1,15 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Repository.Core;
 
 namespace Repository.EF
 {
-    public abstract class DbContext : IDbContext
+    public abstract class DataContext : IDataContext
     {
-        private readonly Microsoft.EntityFrameworkCore.DbContext dbContext;
+        private readonly DbContext dbContext;
 
-        public DbContext(Microsoft.EntityFrameworkCore.DbContext dbContext)
+        protected DataContext(DbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Repository.Core;
 
 namespace Repository.EF
@@ -8,7 +9,7 @@ namespace Repository.EF
         where TEntity : class
         where TId : struct
     {
-        public RepositoryAsync(Microsoft.EntityFrameworkCore.DbContext dbContext) : base(dbContext)
+        protected RepositoryAsync(DbContext dbContext) : base(dbContext)
         {
         }
 

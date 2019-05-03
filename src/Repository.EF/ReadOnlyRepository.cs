@@ -11,11 +11,9 @@ namespace Repository.EF
         where TEntity : class
         where TId : struct
     {
-        private readonly Microsoft.EntityFrameworkCore.DbContext dbContext;
-
-        public ReadOnlyRepository(Microsoft.EntityFrameworkCore.DbContext dbContext)
+        protected ReadOnlyRepository(DbContext dbContext)
         {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public IEnumerable<TEntity> All()
@@ -48,6 +46,6 @@ namespace Repository.EF
 
         protected abstract IQueryable<TEntity> ObjectSet { get; }
 
-        protected Microsoft.EntityFrameworkCore.DbContext DbContext => dbContext;
+        protected DbContext DbContext { get; }
     }
 }

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Core
 {
-    public interface IDbContext
+    public interface IDataContext
     {
         void Commit();
         Task CommitAsync();
