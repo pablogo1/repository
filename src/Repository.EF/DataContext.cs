@@ -7,21 +7,21 @@ namespace Repository.EF
 {
     public abstract class DataContext : IDataContext
     {
-        private readonly DbContext dbContext;
-
         protected DataContext(DbContext dbContext)
         {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public void Commit()
         {
-            dbContext.SaveChanges();
+            DbContext.SaveChanges();
         }
 
         public async Task CommitAsync()
         {
-            await dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
         }
+
+        protected DbContext DbContext { get; }
     }
 }

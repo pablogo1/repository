@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Repository.Core
 {
-    public interface IRepository<TEntity, TId>
+    public interface IRepository<TEntity, TId> : IReadOnlyRepository<TEntity, TId>
         where TEntity : class
         where TId : struct
     {
