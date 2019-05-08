@@ -1,19 +1,17 @@
-﻿using Repository.EF.Tests.Model;
+using Repository.EF.Tests.Model;
 
 namespace Repository.EF.Tests.Shared
 {
     public class TestDatabaseFixture
     {
-        private readonly TestDbContext dbContext;
-
         public TestDatabaseFixture()
         {
             var dbContextFactory = new InMemoryDbContextFactory();
-            dbContext = dbContextFactory.CreateDbContext();
-            var blogRepository = new BlogRepository(dbContext);
-            var postRepository = new PostRepository(dbContext);
+            DbContext = dbContextFactory.CreateDbContext();
+            BlogRepository = new BlogRepository(DbContext);
+            PostRepository = new PostRepository(DbContext);
 
-            DataContext = new TestDataContext(dbContext, blogRepository, postRepository);
+            DataContext = new TestDataContext(DbContext, BlogRepository, PostRepository);
 
             SetupBaseData();
         }
@@ -29,7 +27,7 @@ namespace Repository.EF.Tests.Shared
             // var post22 = new Post { PostId = 5, BlogId = 2, Title = "Blog 2 Post 2" };
             // var post23 = new Post { PostId = 6, BlogId = 2, Title = "Blog 2 Post 3" };
 
-            dbContext.Blogs.AddRange(new Blog[] {
+            DbContext.Blogs.AddRange(new Blog[] {
                 new Blog { BlogId = 1, Url = "test" },
                 new Blog { BlogId = 2, Url = "test 2" },
                 new Blog { BlogId = 3, Url = "test 3" },
@@ -42,7 +40,7 @@ namespace Repository.EF.Tests.Shared
                 new Blog { BlogId = 10, Url = "test 10" }
             });
 
-            dbContext.Posts.AddRange(new Post[] {
+            DbContext.Posts.AddRange(new Post[] {
                 new Post { PostId = 1, BlogId = 1, Title = "Blog 1 Post 1" },
                 new Post { PostId = 2, BlogId = 1, Title = "Blog 1 Post 2" },
                 new Post { PostId = 3, BlogId = 1, Title = "Blog 1 Post 3" },
@@ -61,9 +59,13 @@ namespace Repository.EF.Tests.Shared
             // dbContext.Posts.AddRange(new Post[] { post11, post12, post13, post21,
             //     post22, post23});
 
-            dbContext.SaveChanges();
+            DbContext.SaveChanges();
         }
 
         public TestDataContext DataContext { get; }
-    }
+        public IBlogRepository BlogRepository { get; }
+        public IPostRepository PostRepository { get; }
+
+        public TestDbContext DbContext { get; }
+     }
 }

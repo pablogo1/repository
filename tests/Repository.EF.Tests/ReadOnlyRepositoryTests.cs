@@ -2,21 +2,20 @@ using Repository.EF.Tests.Model;
 using Repository.EF.Tests.Shared;
 using Xunit;
 using System.Linq;
+using System.Collections.Generic;
+using System;
 
 namespace Repository.EF.Tests
 {
     public class ReadOnlyRepositoryTests : IClassFixture<TestDatabaseFixture>
     {
+        private readonly IBlogRepository repository;
         private readonly TestDbContext dbContext;
-        private readonly BlogRepository repository;
 
-        public ReadOnlyRepositoryTests()
+        public ReadOnlyRepositoryTests(TestDatabaseFixture testDatabaseFixture)
         {
-            var dbContextFactory = new InMemoryDbContextFactory();
-            dbContext = dbContextFactory.CreateDbContext();
-            repository = new BlogRepository(dbContext);
-
-            SetupDbContext();
+            dbContext = testDatabaseFixture.DbContext;
+            repository = testDatabaseFixture.BlogRepository;
         }
 
         [Fact]
@@ -54,17 +53,40 @@ namespace Repository.EF.Tests
             //Arrange
             const int pageIndex = 0;
             const int pageSize = 5;
-            var blogs = dbContext.Blogs.ToList();
-            var expectedItems = blogs.Take(pageSize);
+            const int startIndex = 0;
+            const int endIndex = 4;
 
             //Act
-            var items = repository.All(pageIndex, pageSize);
+            TestPaging(pageIndex, pageSize, startIndex, endIndex);
+        }
 
-            //Assert
-            Assert.NotNull(items);
-            Assert.NotEmpty(items);
-            Assert.Equal(expectedItems, items);
-            
+        [Fact]
+        public void All_ReturnsElementsFrom4To9_WhenPageIndexIsOneAndPageSizeIs5()
+        {
+            //Arrange
+            const int pageIndex = 1;
+            const int pageSize = 5;
+            const int startIndex = 4;
+            const int endIndex = 9;
+
+            //Act
+            TestPaging(pageIndex, pageSize, startIndex, endIndex);
+        }
+
+        private void TestPaging(int pageIndex, int pageSize, int index0, int index1)
+        {
+            var blogs = dbContext.Blogs.ToList();
+            var expectedBlogs = new List<Blog>();
+            for (int i = index0; i <= index1; i++)
+            {
+                expectedBlogs.Add(blogs[i]);
+            }
+
+            var actualBlogs = repository.All(pageIndex, pageSize);
+
+            Assert.NotNull(actualBlogs);
+            Assert.NotEmpty(actualBlogs);
+            Assert.Equal(expectedBlogs, actualBlogs);
         }
     }
 }
