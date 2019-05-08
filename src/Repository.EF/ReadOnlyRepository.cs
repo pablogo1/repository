@@ -23,8 +23,11 @@ namespace Repository.EF
 
         public IEnumerable<TEntity> All(int pageIndex, int pageSize)
         {
+            if(pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
+            if(pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+
             return ObjectSet
-                .Skip(pageIndex)
+                .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToList();
         }
@@ -36,8 +39,11 @@ namespace Repository.EF
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize)
         {
+            if(pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
+            if(pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+
             return ObjectSet.Where(predicate)
-                .Skip(pageIndex)
+                .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToList();
         }

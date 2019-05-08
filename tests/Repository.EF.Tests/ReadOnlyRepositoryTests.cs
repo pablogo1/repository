@@ -47,46 +47,106 @@ namespace Repository.EF.Tests
             Assert.Equal(expectedItemCount, items.ToList().Count);
         }
 
-        [Fact]
-        public void All_ReturnsElementsFrom0To4_WhenPageIndexIsZeroAndPageSizeIs5()
+        [Theory]
+        [InlineData(1, 5, 0, 4)]
+        [InlineData(2, 5, 5, 9)]
+        [InlineData(3, 2, 4, 5)]
+        public void All_ReturnsCorrectElements_WhenPageIndexAndPageSizeAreProvided(int pageIndex, int pageSize, int startIndex, int endIndex)
         {
-            //Arrange
-            const int pageIndex = 0;
-            const int pageSize = 5;
-            const int startIndex = 0;
-            const int endIndex = 4;
-
-            //Act
-            TestPaging(pageIndex, pageSize, startIndex, endIndex);
-        }
-
-        [Fact]
-        public void All_ReturnsElementsFrom4To9_WhenPageIndexIsOneAndPageSizeIs5()
-        {
-            //Arrange
-            const int pageIndex = 1;
-            const int pageSize = 5;
-            const int startIndex = 4;
-            const int endIndex = 9;
-
-            //Act
-            TestPaging(pageIndex, pageSize, startIndex, endIndex);
-        }
-
-        private void TestPaging(int pageIndex, int pageSize, int index0, int index1)
-        {
+            // Arrange
             var blogs = dbContext.Blogs.ToList();
             var expectedBlogs = new List<Blog>();
-            for (int i = index0; i <= index1; i++)
+            for (int i = startIndex; i <= endIndex; i++)
             {
                 expectedBlogs.Add(blogs[i]);
             }
 
+            // Act
             var actualBlogs = repository.All(pageIndex, pageSize);
 
+            // Assert
             Assert.NotNull(actualBlogs);
             Assert.NotEmpty(actualBlogs);
             Assert.Equal(expectedBlogs, actualBlogs);
+        }
+
+        [Fact]
+        public void Find_ReturnsAllItemsThatMatchesPredicate()
+        {
+            //Arrange
+            var expectedBlogs = dbContext.Blogs.Where(b => b.BlogId % 2 != 0)
+                .ToList();
+            var expectedItemCount = expectedBlogs.Count;
+
+            //Act
+            var actualBlogs = repository.Find(b => b.BlogId % 2 != 0);
+
+            //Assert
+            Assert.NotNull(actualBlogs);
+            Assert.NotEmpty(actualBlogs);
+            Assert.Equal(expectedBlogs, actualBlogs);
+            Assert.Equal(expectedItemCount, actualBlogs.ToList().Count);
+        }
+
+        [Theory]
+        [InlineData(2, 3, 3, 4)]
+        [InlineData(1, 2, 0, 1)]
+        public void Find_ReturnsPagedItemsThatMatchesPredicate(int pageIndex, int pageSize, int startIndex, int endIndex)
+        {
+            // Arrange
+            var filteredBlogs = dbContext.Blogs.Where(b => b.BlogId % 2 != 0)
+                .ToList();
+            var expectedBlogs = new List<Blog>();
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                expectedBlogs.Add(filteredBlogs[i]);
+            }
+
+            // Act
+            var actualBlogs = repository.Find(b => b.BlogId % 2 != 0, pageIndex, pageSize);
+
+            // Assert
+            Assert.NotNull(actualBlogs);
+            Assert.NotEmpty(actualBlogs);
+            Assert.Equal(expectedBlogs, actualBlogs);
+        }
+
+        [Fact]
+        public void All_PageIndexShouldBeGreaterThanZero()
+        {
+            Assert.NotNull(repository.All(1, 5));
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.All(0, 5));
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.All(-1, 5));
+        }
+
+        [Fact]
+        public void All_PageSizeShouldBeGreaterOrEqualToOne()
+        {
+            Assert.NotNull(repository.All(1, 1));
+            Assert.NotNull(repository.All(1, 5));
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.All(1, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.All(1, -5));
+        }
+
+        [Fact]
+        public void Find_PageIndexShouldBeGreaterThanZero()
+        {
+            Assert.NotNull(repository.Find(b => b.BlogId % 2 != 0, 1, 5));
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.Find(b => b.BlogId % 2 != 0, 0, 5));
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.Find(b => b.BlogId % 2 != 0, -1, 5));
+        }
+
+        [Fact]
+        public void Find_PageSizeShouldBeGreaterOrEqualToOne()
+        {
+            Assert.NotNull(repository.Find(b => b.BlogId % 2 != 0, 1, 1));
+            Assert.NotNull(repository.Find(b => b.BlogId % 2 != 0, 1, 5));
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.Find(b => b.BlogId % 2 != 0, 1, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => repository.Find(b => b.BlogId % 2 != 0, 1, -5));
         }
     }
 }
