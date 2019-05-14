@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Repository.Core</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Pablo Gonzalez</Authors>
+    <Company></Company>
   </PropertyGroup>
 
 </Project>
