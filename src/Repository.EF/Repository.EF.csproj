@@ -1,12 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>Repository.EF</PackageId>
+    <PackageId>PG.Repository.EF</PackageId>
     <Version>0.1.0</Version>
     <Authors>Pablo Gonzalez</Authors>
     <Company></Company>
-    <PackageReference>
   </PropertyGroup>
 
   <ItemGroup>
