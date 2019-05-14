@@ -13,13 +13,6 @@ namespace Repository.EF.Tests.Shared
 
         private new TestDbContext DbContext { get; }
 
-        protected override IQueryable<Blog> ObjectSet => DbContext.Blogs;
-
-        public override Blog GetById(int id)
-        {
-            return ObjectSet.SingleOrDefault(o => o.BlogId == id);
-        }
-
         public Blog GetBlogWithAllPosts(int blogId) 
         {
             return DbContext.Blogs

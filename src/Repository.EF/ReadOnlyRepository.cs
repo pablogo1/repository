@@ -18,7 +18,7 @@ namespace Repository.EF
 
         public IEnumerable<TEntity> All()
         {
-            return ObjectSet.ToList();
+            return DbContext.Set<TEntity>().ToList();
         }
 
         public IEnumerable<TEntity> All(int pageIndex, int pageSize)
@@ -26,7 +26,7 @@ namespace Repository.EF
             if(pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
             if(pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-            return ObjectSet
+            return DbContext.Set<TEntity>()
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToList();
@@ -34,7 +34,9 @@ namespace Repository.EF
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return ObjectSet.Where(predicate).ToList();
+            return DbContext.Set<TEntity>()
+                .Where(predicate)
+                .ToList();
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize)
@@ -42,15 +44,17 @@ namespace Repository.EF
             if(pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
             if(pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-            return ObjectSet.Where(predicate)
+            return DbContext.Set<TEntity>()
+                .Where(predicate)
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToList();
         }
 
-        public abstract TEntity GetById(TId id);
-
-        protected abstract IQueryable<TEntity> ObjectSet { get; }
+        public TEntity GetById(TId id)
+        {
+            return DbContext.Set<TEntity>().Find(id);
+        }
 
         protected DbContext DbContext { get; }
     }
