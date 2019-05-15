@@ -4,8 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>PG.Repository.EF</PackageId>
     <Version>0.1.0</Version>
+    <Deterministic>False</Deterministic>
     <Authors>Pablo Gonzalez</Authors>
     <Company></Company>
+    <PackageDescription>Simple implementation of Repository and Unit of Work patterns for Entity Framework Core.</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>

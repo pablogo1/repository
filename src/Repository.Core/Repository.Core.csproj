@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>PG.Repository.Core</PackageId>
     <Version>0.1.0</Version>
+    <Deterministic>False</Deterministic>
+    <PackageId>PG.Repository.Core</PackageId>
     <Authors>Pablo Gonzalez</Authors>
     <Company></Company>
+    <PackageDescription>Simple implementation of Repository and Unit of Work patterns for data access.</PackageDescription>
   </PropertyGroup>
 
 </Project>
