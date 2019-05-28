@@ -111,7 +111,7 @@ namespace Repository.EF.Tests
             Assert.Equal(expectedBlogs, actualBlogs);
         }
 
-        [Fact]
+        [Fact(Skip = "Moved to PageOptionsTests")]
         public void All_PageIndexShouldBeGreaterThanZero()
         {
             Assert.NotNull(repository.All(1, 5));
@@ -120,7 +120,7 @@ namespace Repository.EF.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => repository.All(-1, 5));
         }
 
-        [Fact]
+        [Fact(Skip = "Moved to PageOptionsTests")]
         public void All_PageSizeShouldBeGreaterOrEqualToOne()
         {
             Assert.NotNull(repository.All(1, 1));
@@ -130,7 +130,7 @@ namespace Repository.EF.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => repository.All(1, -5));
         }
 
-        [Fact]
+        [Fact(Skip = "Moved to PageOptionsTests")]
         public void Find_PageIndexShouldBeGreaterThanZero()
         {
             Assert.NotNull(repository.Find(b => b.BlogId % 2 != 0, 1, 5));
@@ -139,7 +139,7 @@ namespace Repository.EF.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => repository.Find(b => b.BlogId % 2 != 0, -1, 5));
         }
 
-        [Fact]
+        [Fact(Skip = "Moved to PageOptionsTests")]
         public void Find_PageSizeShouldBeGreaterOrEqualToOne()
         {
             Assert.NotNull(repository.Find(b => b.BlogId % 2 != 0, 1, 1));

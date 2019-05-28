@@ -5,6 +5,8 @@ using Xunit;
 using Moq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Repository.EF.Tests
 {
@@ -12,23 +14,28 @@ namespace Repository.EF.Tests
     {
         private readonly Mock<TestDbContext> mockDbContext;
         private readonly BlogRepository repository;
+        private readonly BlogRepositoryAsync asyncRepository;
 
         public RepositoryTests()
         {
             mockDbContext = new Mock<TestDbContext>();
             repository = new BlogRepository(mockDbContext.Object);
+            asyncRepository = new BlogRepositoryAsync(mockDbContext.Object);
         }
 
         [Fact]
-        public void Add_ShouldCallUnderlyingDbContextAddMethod()
+        public async Task Add_ShouldCallUnderlyingDbContextAddMethod()
         {
-            repository.Add(new Blog { BlogId = 1, Url = "test" });
+            var blog = new Blog { BlogId = 1, Url = "test" };
+            repository.Add(blog);
+            await asyncRepository.AddAsync(blog);
 
             mockDbContext.Verify(m => m.Add(It.IsAny<Blog>()), Times.Once);
+            mockDbContext.Verify(m => m.AddAsync(It.IsAny<Blog>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
-        public void AddRange_ShouldCallUnderlyingDbContextAddRangeMethod()
+        public async Task AddRange_ShouldCallUnderlyingDbContextAddRangeMethod()
         {
             var blogs = new HashSet<Blog>() 
             {
@@ -37,6 +44,7 @@ namespace Repository.EF.Tests
             };
             
             repository.AddRange(blogs);
+            await asyncRepository.AddRangeAsync(blogs);
 
             mockDbContext.Verify(m => m.AddRange(It.IsAny<IEnumerable<Blog>>()), Times.Once);
         }

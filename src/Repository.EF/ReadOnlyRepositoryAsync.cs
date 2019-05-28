@@ -17,29 +17,48 @@ namespace Repository.EF
             this.DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<IEnumerable<TEntity>> AllAsync()
+        public async Task<IEnumerable<TEntity>> AllAsync()
         {
-            throw new NotImplementedException();
+            return await AllAsync(null);
         }
 
-        public Task<IEnumerable<TEntity>> AllAsync(int pageIndex, int pageSize)
+        public async Task<IEnumerable<TEntity>> AllAsync(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            var pagingOptions = PagingOptions.Create(pageIndex, pageSize);
+
+            return await AllAsync(pagingOptions);
         }
 
-        public Task<IEnumerable<TEntity>> FindAsync(Expression<Func<bool, TEntity>> predicate)
+        public async Task<IEnumerable<TEntity>> AllAsync(PagingOptions pagingOptions)
         {
-            throw new NotImplementedException();
+            return await DbContext.Set<TEntity>()
+                .Page(pagingOptions)
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<TEntity>> FindAsync(Expression<Func<bool, TEntity>> predicate, int pageIndex, int pageSize)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await FindAsync(predicate, null);        
         }
 
-        public abstract Task<TEntity> GetByIdAsync(TId id);
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize)
+        {
+            var pagingOptions = PagingOptions.Create(pageIndex, pageSize);
 
-        protected abstract IQueryable<TEntity> ObjectSet { get; }
+            return await FindAsync(predicate, pagingOptions);
+        }
+
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, PagingOptions pagingOptions)
+        {
+            return await DbContext.Set<TEntity>()
+                .Page(pagingOptions)
+                .ToListAsync();
+        }
+
+        public async Task<TEntity> GetByIdAsync(TId id)
+        {
+            return await DbContext.Set<TEntity>().FindAsync(id);
+        }
 
         protected DbContext DbContext { get; }
     }

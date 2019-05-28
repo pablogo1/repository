@@ -12,7 +12,9 @@ namespace Repository.Core
         Task<TEntity> GetByIdAsync(TId id);
         Task<IEnumerable<TEntity>> AllAsync();
         Task<IEnumerable<TEntity>> AllAsync(int pageIndex, int pageSize);
-        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<bool, TEntity>> predicate);
-        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<bool, TEntity>> predicate, int pageIndex, int pageSize);
+        Task<IEnumerable<TEntity>> AllAsync(PagingOptions pagingOptions);
+        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize);
+        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, PagingOptions pagingOptions);
     }
 }

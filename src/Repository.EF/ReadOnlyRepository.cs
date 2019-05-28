@@ -18,36 +18,48 @@ namespace Repository.EF
 
         public IEnumerable<TEntity> All()
         {
-            return DbContext.Set<TEntity>().ToList();
+            return All(null);
         }
 
         public IEnumerable<TEntity> All(int pageIndex, int pageSize)
         {
-            if(pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
-            if(pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            var pagingOptions = new PagingOptions 
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
 
+            return All(pagingOptions);
+        }
+
+        public IEnumerable<TEntity> All(PagingOptions pagingOptions)
+        {
             return DbContext.Set<TEntity>()
-                .Skip(pageSize * (pageIndex - 1))
-                .Take(pageSize)
+                .Page(pagingOptions)
                 .ToList();
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return DbContext.Set<TEntity>()
-                .Where(predicate)
-                .ToList();
+            return Find(predicate, null);
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize)
         {
-            if(pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
-            if(pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            var pagingOptions = new PagingOptions
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
 
+            return Find(predicate, pagingOptions);
+        }
+
+        public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, PagingOptions pagingOptions)
+        {
             return DbContext.Set<TEntity>()
                 .Where(predicate)
-                .Skip(pageSize * (pageIndex - 1))
-                .Take(pageSize)
+                .Page(pagingOptions)
                 .ToList();
         }
 
