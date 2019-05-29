@@ -6,7 +6,7 @@ Repository and Unit of Work patterns implemented in C#. This has the following b
 
 ## Getting Started
 ### Installation
-Install the required packages (this will install the Entity Framework version):
+Install the required packages (this will install the Entity Framework Core version):
 ```
 $ dotnet add package PG.Repository.EF
 ```
@@ -34,8 +34,22 @@ public class Post
   public Blog Blog { get; set; }
 }
 ```
+2. Define Entity Framework Core `DbContext`:
+```csharp
+using Microsoft.EntityFrameworkCore;
 
-2. Define repository interface:
+public class BloggingDbContext : DbContext
+{
+  public class BloggingDbContext(DbContextOptions<BloggingDbContext> options)
+    : base(options)
+  {}
+
+  public DbSet<Blog> Blogs { get; set; }
+  public DbSet<Post> Posts { get; set; }
+}
+```
+
+3. Define repository interface:
 ```csharp
 using PG.Repository.Core;
 
@@ -53,7 +67,7 @@ public interface IPostRepository : IRepository<Post, int>
 }
 ```
 
-3. Implement `DataContext`:
+4. Implement `DataContext`:
 ```csharp
 using System;
 using PG.Repository.EF;
@@ -66,7 +80,8 @@ public interface IMyBloggingDataContext : IDataContext
 
 public class MyBloggingDataContext : DataContext, IMyBloggingDataContext
 {
-  public MyBloggingDataContext(YourDbContext dbContext, 
+  // Use DI to initialize your repositories.
+  public MyBloggingDataContext(BloggingDbContext dbContext, 
     IBlogRepository blogRepository, 
     IPostRepository postRepository) 
     : base(dbContext)
@@ -75,6 +90,7 @@ public class MyBloggingDataContext : DataContext, IMyBloggingDataContext
     PostRepository = postRepository ?? throw new ArgumentNullException(nameof(postRepository));
   }
 
+  // You may want to include all repositories here and initialize them on the constructor using DI.
   public IBlogRepository BlogRepository { get; }
   public IPostRepository PostRepository { get; }
 }
@@ -82,25 +98,30 @@ public class MyBloggingDataContext : DataContext, IMyBloggingDataContext
 
 4. Implement `IBlogRepository` and `IPostRepository`:
 ```csharp
+using Microsoft.EntityFrameworkCore;
 using PG.Repository.EF;
 
 public class BlogRepository : Repository<Blog, int>, IBlogRepository
 {
-  public class BlogRepository(MyBloggingDataContext dbContext)
+  // PG.Repository.EF repositories expect Entity Framework Core DbContext so
+  // they can access data using DbContext.Set<TEntity>()
+  public class BlogRepository(BloggingDbContext dbContext)
     : base(dbContext)
   {}
+
+  // You will not need to implement further methods to have CRUD functionality here.
 }
 
 public class PostRepository : Repository<Post, int>, IPostRepository
 {
-  public class PostRepository(MyBloggingContext dbContext)
+  public class PostRepository(BloggingDbContext dbContext)
     : base(dbContext)
   {
     DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
   }
 
   /* Access to EF DbContext to allow query building. */
-  private new MyBloggingContext DbContext { get; }
+  private new BloggingDbContext DbContext { get; }
 
   /* Custom query method with pageIndex and pageSize (to be deprecated in favor of PagingOptions) */
   IEnumerable<Post> FindByTitle(string titleContains, int pageIndex, int pageSize)
