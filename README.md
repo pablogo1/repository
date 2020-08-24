@@ -1,3 +1,5 @@
+![.NET Core](https://github.com/pablogo1/repository/workflows/.NET%20Core/badge.svg)
+
 # Repository
 Repository and Unit of Work patterns implemented in C#. This has the following benefits:
 * **Decoupling:** Avoids having your OR/M provider all over your application code.
