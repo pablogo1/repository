@@ -8,6 +8,7 @@ using Repository.Core;
 
 namespace Repository.EF
 {
+    [Obsolete("Consider using ReadOnlyRepository class instead.")]
     public abstract class ReadOnlyRepositoryAsync<TEntity, TId> : IReadOnlyRepositoryAsync<TEntity, TId>
         where TEntity : class
         where TId : struct
@@ -51,6 +52,7 @@ namespace Repository.EF
         public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, PagingOptions pagingOptions)
         {
             return await DbContext.Set<TEntity>()
+                .Where(predicate)
                 .Page(pagingOptions)
                 .ToListAsync();
         }

@@ -4,12 +4,9 @@ namespace Repository.EF.Tests.Shared
 {
     public class TestDataContext : DataContext
     {
-        public TestDataContext(TestDbContext dbContext) : this(dbContext, null, null)
-        {
-
-        }
-
-        public TestDataContext(TestDbContext dbContext, IBlogRepository blogRepository, IPostRepository postRepository)
+        public TestDataContext(TestDbContext dbContext,
+            IBlogRepository blogRepository = null,
+            IPostRepository postRepository = null)
             : base(dbContext)
         {
             BlogRepository = blogRepository;

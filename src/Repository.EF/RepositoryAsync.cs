@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +6,7 @@ using Repository.Core;
 
 namespace Repository.EF
 {
+    [Obsolete("Consider using Repository class instead.")]
     public abstract class RepositoryAsync<TEntity, TId> : ReadOnlyRepositoryAsync<TEntity, TId>, IRepositoryAsync<TEntity, TId>
         where TEntity : class
         where TId : struct

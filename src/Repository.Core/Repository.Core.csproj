@@ -9,6 +9,7 @@
     <Company></Company>
     <PackageDescription>Simple implementation of Repository and Unit of Work patterns for data access.</PackageDescription>
     <License>MIT</License>
+    <ReleaseVersion>0.2</ReleaseVersion>
   </PropertyGroup>
 
 </Project>

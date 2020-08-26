@@ -14,39 +14,58 @@ namespace Repository.EF.Tests
     {
         private readonly Mock<TestDbContext> mockDbContext;
         private readonly BlogRepository repository;
-        private readonly BlogRepositoryAsync asyncRepository;
 
         public RepositoryTests()
         {
             mockDbContext = new Mock<TestDbContext>();
             repository = new BlogRepository(mockDbContext.Object);
-            asyncRepository = new BlogRepositoryAsync(mockDbContext.Object);
         }
 
         [Fact]
-        public async Task Add_ShouldCallUnderlyingDbContextAddMethod()
+        public void Add_ShouldCallUnderlyingDbContextAddMethod()
         {
             var blog = new Blog { BlogId = 1, Url = "test" };
             repository.Add(blog);
-            await asyncRepository.AddAsync(blog);
 
             mockDbContext.Verify(m => m.Add(It.IsAny<Blog>()), Times.Once);
-            mockDbContext.Verify(m => m.AddAsync(It.IsAny<Blog>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
-        public async Task AddRange_ShouldCallUnderlyingDbContextAddRangeMethod()
+        public async Task AddAsync_ShouldCallUnderlyingDbContextAddAsyncMethod()
         {
-            var blogs = new HashSet<Blog>() 
+            var blog = new Blog { BlogId = 1, Url = "test" };
+            await repository.AddAsync(blog);
+
+            mockDbContext.Verify(m => m.AddAsync(It.IsAny<Blog>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+
+        [Fact]
+        public void AddRange_ShouldCallUnderlyingDbContextAddRangeMethod()
+        {
+            var blogs = new HashSet<Blog>()
             {
                 new Blog { BlogId = 1, Url = "test" },
                 new Blog { BlogId = 2, Url = "test 123" }
             };
-            
+
             repository.AddRange(blogs);
-            await asyncRepository.AddRangeAsync(blogs);
 
             mockDbContext.Verify(m => m.AddRange(It.IsAny<IEnumerable<Blog>>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddRangeAsync_ShouldCallUnderlyingDbContextAddRangeAsyncMethod()
+        {
+            var blogs = new HashSet<Blog>()
+            {
+                new Blog { BlogId = 1, Url = "test" },
+                new Blog { BlogId = 2, Url = "test 123" }
+            };
+
+            await repository.AddRangeAsync(blogs);
+
+            mockDbContext.Verify(m => m.AddRangeAsync(It.IsAny<IEnumerable<Blog>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]

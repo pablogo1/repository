@@ -9,6 +9,7 @@
     <Company></Company>
     <PackageDescription>Simple implementation of Repository and Unit of Work patterns for Entity Framework Core.</PackageDescription>
     <License>MIT</License>
+    <ReleaseVersion>0.2</ReleaseVersion>
   </PropertyGroup>
 
   <ItemGroup>
