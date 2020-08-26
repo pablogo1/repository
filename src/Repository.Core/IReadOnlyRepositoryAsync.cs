@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Core
 {
+    [Obsolete("Async members moved to IReadOnlyRepository interface.")]
     public interface IReadOnlyRepositoryAsync<TEntity, TId>
         where TEntity : class
         where TId : struct

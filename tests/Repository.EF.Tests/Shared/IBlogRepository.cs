@@ -8,9 +8,4 @@ namespace Repository.EF.Tests.Shared
     {
         Blog GetBlogWithAllPosts(int blogId);
     }
-
-    public interface IBlogRepositoryAsync : IRepositoryAsync<Blog, int>
-    {
-        Task<Blog> GetBlogWithAllPostsAsync(int blogId);
-    }
 }

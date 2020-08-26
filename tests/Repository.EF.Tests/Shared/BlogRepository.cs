@@ -16,33 +16,19 @@ namespace Repository.EF.Tests.Shared
 
         public Blog GetBlogWithAllPosts(int blogId) 
         {
-            return DbContext.Blogs
-                .Include(o => o.Posts)
-                .AsNoTracking()
+            return GetBlogWithAllPostsQuery
                 .SingleOrDefault(o => o.BlogId == blogId);
-        }
-    }
-
-    public class BlogRepositoryAsync : RepositoryAsync<Blog, int>, IBlogRepositoryAsync
-    {
-        public BlogRepositoryAsync(TestDbContext dbContext) : base(dbContext)
-        {
-            DbContext = dbContext;
-        }
-
-        private new TestDbContext DbContext { get; }
-
-        public Blog GetBlogWithAllPosts(int blogId)
-        {
-            return GetBlogWithAllPostsAsync(blogId).GetAwaiter().GetResult();
         }
 
         public async Task<Blog> GetBlogWithAllPostsAsync(int blogId)
         {
-            return await DbContext.Blogs
-                .Include(o => o.Posts)
-                .AsNoTracking()
+            return await GetBlogWithAllPostsQuery
                 .SingleOrDefaultAsync(o => o.BlogId == blogId);
         }
+
+        private IQueryable<Blog> GetBlogWithAllPostsQuery => DbContext
+            .Blogs
+            .Include(o => o.Posts)
+            .AsNoTracking();
     }
 }
