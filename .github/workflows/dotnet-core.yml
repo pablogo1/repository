@@ -1,4 +1,4 @@
-name: .NET Core
+name: Build and Publish PG.Repository.EF
 
 on:
   push:
@@ -23,3 +23,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Publish PG.Repository.EF
+      uses: brandedoutcast/publish-nuget@v2.5.2
+      with:
+              PROJECT_FILE_PATH: src/Repository.EF/Repository.EF.csproj
+              NUGET_KEY: ${{secrets.NUGET_API_KEY}}

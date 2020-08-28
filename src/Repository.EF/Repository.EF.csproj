@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>PG.Repository.EF</PackageId>
-    <Version>0.1.3</Version>
+    <Version>0.2.0</Version>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <Deterministic>False</Deterministic>
     <Authors>Pablo Gonzalez</Authors>
     <Company></Company>
     <PackageDescription>Simple implementation of Repository and Unit of Work patterns for Entity Framework Core.</PackageDescription>
     <License>MIT</License>
-    <ReleaseVersion>0.2</ReleaseVersion>
+    <ReleaseVersion>0.2.0</ReleaseVersion>
   </PropertyGroup>
 
   <ItemGroup>
