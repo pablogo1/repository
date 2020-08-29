@@ -1,4 +1,4 @@
-name: Build and Publish PG.Repository.EF
+name: Build and Test
 
 on:
   push:
@@ -23,13 +23,3 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: Publish PG.Repository.Core
-      uses: brandedoutcast/publish-nuget@v2.5.2
-      with:
-        PROJECT_FILE_PATH: src/Repository.Core/Repository.Core.csproj
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    - name: Publish PG.Repository.EF
-      uses: brandedoutcast/publish-nuget@v2.5.2
-      with:
-        PROJECT_FILE_PATH: src/Repository.EF/Repository.EF.csproj
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
