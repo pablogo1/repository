@@ -16,9 +16,15 @@ jobs:
               run: dotnet restore
             - name: Build
               run: dotnet build --configuration Release --no-restore
-            - name: Publish on version change 
-              id: publish_nuget
-              uses: rohith/publish-nuget@v2
+            - name: Publish on version change PG.Repository.Core
+              id: publish_core_nuget
+              uses: brandedoutcast/publish-nuget@v2.5.5
               with:
-                PROJECT_FILE_PATH: repository.sln
+                PROJECT_FILE_PATH: src/Repository.Core/Repository.Core.csproj
                 NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+            - name: Publish on version change PG.Repository.EF
+              id: publish_ef_nuget
+              uses: brandedoutcast/publish-nuget@v2.5.5
+              with:
+                  PROJECT_FILE_PATH: src/Repository.EF/Repository.EF.csproj
+                  NUGET_KEY: ${{secrets.NUGET_API_KEY}}
