@@ -7,5 +7,6 @@ namespace Repository.EF.Tests.Shared
     public interface IBlogRepository : IRepository<Blog, int>
     {
         Blog GetBlogWithAllPosts(int blogId);
+        Task<Blog> GetBlogWithAllPostsAsync(int blogId);
     }
 }

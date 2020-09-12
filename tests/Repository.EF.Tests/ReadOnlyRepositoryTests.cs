@@ -13,10 +13,12 @@ namespace Repository.EF.Tests
         private readonly IBlogRepository repository;
         private readonly TestDbContext dbContext;
 
-        public ReadOnlyRepositoryTests(TestDatabaseFixture testDatabaseFixture)
+        public ReadOnlyRepositoryTests(TestDatabaseFixture fixture)
         {
-            dbContext = testDatabaseFixture.DbContext;
-            repository = testDatabaseFixture.DataContext.BlogRepository;
+            var testDataContext = fixture.DataContextFactory.CreateTestDataContext();
+
+            dbContext = testDataContext.DbContext;
+            repository = testDataContext.BlogRepository;
         }
 
         [Fact]
@@ -26,7 +28,7 @@ namespace Repository.EF.Tests
             const int blogId = 2;
 
             //Act
-            var actual = repository.GetById(2);
+            var actual = repository.GetById(blogId);
 
             //Assert
             Assert.NotNull(actual);

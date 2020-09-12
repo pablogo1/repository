@@ -1,4 +1,5 @@
 using Repository.EF.Tests.Model;
+using System;
 using System.Linq;
 
 namespace Repository.EF.Tests.Shared
@@ -7,16 +8,9 @@ namespace Repository.EF.Tests.Shared
     {
         public TestDatabaseFixture()
         {
-            var dbContextFactory = new InMemoryDbContextFactory();
-            DbContext = dbContextFactory.CreateDbContext("test");
-
-            IBlogRepository blogRepository = new BlogRepository(DbContext);
-            IPostRepository postRepository = new PostRepository(DbContext);
-            
-            DataContext = new TestDataContext(DbContext, blogRepository, postRepository);
+            DataContextFactory = new TestDataContextFactory();
         }
 
-        public TestDataContext DataContext { get; }
-        public TestDbContext DbContext { get; }
+        public TestDataContextFactory DataContextFactory { get; }
     }
 }
