@@ -28,7 +28,6 @@ namespace Repository.EF.Tests.Shared
 
         private IQueryable<Blog> GetBlogWithAllPostsQuery => DbContext
             .Blogs
-            .Include(o => o.Posts)
-            .AsNoTracking();
+            .Include(o => o.Posts);
     }
 }

@@ -1,6 +1,7 @@
 using Repository.EF.Tests.Shared;
 using Xunit;
 using System.Threading.Tasks;
+using Repository.EF.Tests.Model;
 
 namespace Repository.EF.Tests.Integration
 {
@@ -19,7 +20,7 @@ namespace Repository.EF.Tests.Integration
         public async Task UpdateAnExistingRecordAsync()
         {
             const int blogId = 1;
-            const string updatedBlogUrl = "http://updated.url/blog";
+            const string updatedBlogUrl = "http://updated.url/blog2";
 
             var blog = await blogRepository.GetByIdAsync(blogId);
 
@@ -32,38 +33,49 @@ namespace Repository.EF.Tests.Integration
             blog = await blogRepository.GetByIdAsync(blogId);
 
             Assert.Equal(updatedBlogUrl, blog.Url);
+        }
 
-            Assert.Empty(blog.Posts);
+        [Fact]
+        public async Task AddANewRecordAsync()
+        {
+            const int newBlogId = 998;
+            Blog newBlog = new Blog
+            {
+                BlogId = newBlogId,
+                Url = "a.new.url"
+            };
 
-            blog = await blogRepository.GetBlogWithAllPostsAsync(blogId);
-            Assert.NotEmpty(blog.Posts);
-
-            blog = await blogRepository.GetByIdAsync(3);
-            blog.Posts.Add(new Model.Post {
-                Blog = blog,
-                PostId = 15,
-                Title = "This is a new post",
-                Content = "This is a test content"
-            });
+            await blogRepository.AddAsync(newBlog);
 
             await dataContext.CommitAsync();
 
-            blog = await blogRepository.GetBlogWithAllPostsAsync(3);
+            Blog blog = await blogRepository.GetByIdAsync(newBlogId);
             Assert.NotNull(blog);
-            Assert.NotEmpty(blog.Posts);
+        }
 
-            blog.Posts.Add(new Model.Post {
-                Blog = blog,
-                PostId = 16,
-                Title = "This is a new post title",
-                Content = "This is a test content this is a content"
-            });
+        [Fact]
+        public async Task DeleteARecordAsync()
+        {
+            const int blogIdToDelete = 881;
+            Blog newBlog = new Blog
+            {
+                BlogId = blogIdToDelete,
+                Url = "test url"
+            };
+
+            await blogRepository.AddAsync(newBlog);
+            await dataContext.CommitAsync();
+
+            Blog foundBlog = await blogRepository.GetByIdAsync(blogIdToDelete);
+            Assert.NotNull(foundBlog);
+
+            blogRepository.Delete(foundBlog);
+            Assert.NotNull(foundBlog);
 
             await dataContext.CommitAsync();
 
-            blog = await blogRepository.GetBlogWithAllPostsAsync(3);
-            
-            Assert.Equal(2, blog.Posts.Count);
+            foundBlog = await blogRepository.GetByIdAsync(blogIdToDelete);
+            Assert.Null(foundBlog);
         }
 
         [Fact]
@@ -83,37 +95,60 @@ namespace Repository.EF.Tests.Integration
             blog = blogRepository.GetById(blogId);
 
             Assert.Equal(updatedBlogUrl, blog.Url);
-            Assert.Empty(blog.Posts);
-
-            blog = blogRepository.GetBlogWithAllPosts(blogId);
-            Assert.NotEmpty(blog.Posts);
-
-            blog = blogRepository.GetById(3);
-            blog.Posts.Add(new Model.Post {
-                Blog = blog,
-                PostId = 25,
-                Title = "This is a new post",
-                Content = "this is a test content"
-            });
-
-            dataContext.Commit();
-
-            blog = blogRepository.GetBlogWithAllPosts(3);
-            Assert.NotNull(blog);
-            Assert.NotEmpty(blog.Posts);
-
-            blog.Posts.Add(new Model.Post {
-                Blog = blog,
-                PostId = 26,
-                Title = "This is a new post title",
-                Content = "This is a test content"
-            });
-
-            dataContext.Commit();
-
-            blog = blogRepository.GetBlogWithAllPosts(3);
-
-            Assert.Equal(2, blog.Posts.Count);
         }
+
+        [Fact]
+        public void AddANewRecord()
+        {
+            const int newBlogId = 997;
+            Blog newBlog = new Blog
+            {
+                BlogId = newBlogId,
+                Url = "a.new.url"
+            };
+
+            blogRepository.Add(newBlog);
+
+            dataContext.Commit();
+
+            Blog blog = blogRepository.GetById(newBlogId);
+            Assert.NotNull(blog);
+        }
+
+        [Fact]
+        public void DeleteARecord()
+        {
+            const int blogIdToDelete = 888;
+            Blog newBlog = new Blog
+            {
+                BlogId = blogIdToDelete,
+                Url = "test url"
+            };
+
+            blogRepository.Add(newBlog);
+
+            dataContext.Commit();
+
+            Blog foundBlog = blogRepository.GetById(blogIdToDelete);
+            Assert.NotNull(foundBlog);
+
+            blogRepository.Delete(foundBlog);
+            Assert.NotNull(foundBlog);
+
+            dataContext.Commit();
+
+            foundBlog = blogRepository.GetById(blogIdToDelete);
+            Assert.Null(foundBlog);
+        }
+
+        [Fact]
+        public void TestName()
+        {
+        //Given
+        
+        //When
+        
+        //Then
+        }   
     }
 }
