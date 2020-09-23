@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Repository.EF.Tests.Model
 {
@@ -10,8 +10,10 @@ namespace Repository.EF.Tests.Model
         }
         
         public int BlogId { get; set; }
+#pragma warning disable CA1056 // URI-like properties should not be strings
         public string Url { get; set; }
+#pragma warning restore CA1056 // URI-like properties should not be strings
 
-        public ICollection<Post> Posts { get; set; }
+        public ICollection<Post> Posts { get; }
     }
 }

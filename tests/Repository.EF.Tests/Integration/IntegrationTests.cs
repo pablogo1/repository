@@ -12,6 +12,11 @@ namespace Repository.EF.Tests.Integration
         
         public IntegrationTests(TestDatabaseFixture fixture)
         {
+            if (fixture is null)
+            {
+                throw new System.ArgumentNullException(nameof(fixture));
+            }
+
             dataContext = fixture.DataContextFactory.CreateTestDataContext();
             blogRepository = dataContext.BlogRepository;
         }
@@ -22,15 +27,15 @@ namespace Repository.EF.Tests.Integration
             const int blogId = 1;
             const string updatedBlogUrl = "http://updated.url/blog2";
 
-            var blog = await blogRepository.GetByIdAsync(blogId);
+            var blog = await blogRepository.GetByIdAsync(blogId).ConfigureAwait(false);
 
             Assert.NotNull(blog);
 
             blog.Url = updatedBlogUrl;
 
-            await dataContext.CommitAsync();
+            await dataContext.CommitAsync().ConfigureAwait(false);
 
-            blog = await blogRepository.GetByIdAsync(blogId);
+            blog = await blogRepository.GetByIdAsync(blogId).ConfigureAwait(false);
 
             Assert.Equal(updatedBlogUrl, blog.Url);
         }
@@ -45,11 +50,11 @@ namespace Repository.EF.Tests.Integration
                 Url = "a.new.url"
             };
 
-            await blogRepository.AddAsync(newBlog);
+            await blogRepository.AddAsync(newBlog).ConfigureAwait(false);
 
-            await dataContext.CommitAsync();
+            await dataContext.CommitAsync().ConfigureAwait(false);
 
-            Blog blog = await blogRepository.GetByIdAsync(newBlogId);
+            Blog blog = await blogRepository.GetByIdAsync(newBlogId).ConfigureAwait(false);
             Assert.NotNull(blog);
         }
 
@@ -63,18 +68,18 @@ namespace Repository.EF.Tests.Integration
                 Url = "test url"
             };
 
-            await blogRepository.AddAsync(newBlog);
-            await dataContext.CommitAsync();
+            await blogRepository.AddAsync(newBlog).ConfigureAwait(false);
+            await dataContext.CommitAsync().ConfigureAwait(false);
 
-            Blog foundBlog = await blogRepository.GetByIdAsync(blogIdToDelete);
+            Blog foundBlog = await blogRepository.GetByIdAsync(blogIdToDelete).ConfigureAwait(false);
             Assert.NotNull(foundBlog);
 
             blogRepository.Delete(foundBlog);
             Assert.NotNull(foundBlog);
 
-            await dataContext.CommitAsync();
+            await dataContext.CommitAsync().ConfigureAwait(false);
 
-            foundBlog = await blogRepository.GetByIdAsync(blogIdToDelete);
+            foundBlog = await blogRepository.GetByIdAsync(blogIdToDelete).ConfigureAwait(false);
             Assert.Null(foundBlog);
         }
 

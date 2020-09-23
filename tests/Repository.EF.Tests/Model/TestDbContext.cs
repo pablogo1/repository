@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository.EF.Tests.Model
@@ -17,8 +17,13 @@ namespace Repository.EF.Tests.Model
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder) 
+        protected override void OnModelCreating(ModelBuilder builder)
         {
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             builder.Entity<Blog>()
                 .HasKey(m => m.BlogId);
             builder.Entity<Blog>()

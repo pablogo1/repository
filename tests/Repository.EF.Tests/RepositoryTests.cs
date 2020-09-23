@@ -18,6 +18,11 @@ namespace Repository.EF.Tests
 
         public RepositoryTests(TestDatabaseFixture fixture)
         {
+            if (fixture is null)
+            {
+                throw new System.ArgumentNullException(nameof(fixture));
+            }
+
             var testDataContext = fixture.DataContextFactory.CreateTestDataContext();
 
             dbContext = testDataContext.DbContext;
@@ -41,7 +46,7 @@ namespace Repository.EF.Tests
             var blog = new Blog { BlogId = 11, Url = "test.url" };
             Assert.False(dbContext.ChangeTracker.HasChanges());
 
-            await repository.AddAsync(blog);
+            await repository.AddAsync(blog).ConfigureAwait(false);
 
             Assert.True(dbContext.ChangeTracker.HasChanges());
         }
@@ -75,7 +80,7 @@ namespace Repository.EF.Tests
             };
             Assert.False(dbContext.ChangeTracker.HasChanges());
 
-            await repository.AddRangeAsync(blogs);
+            await repository.AddRangeAsync(blogs).ConfigureAwait(false);
 
             var entries = dbContext.ChangeTracker.Entries<Blog>().Select(p => p.Entity);
 

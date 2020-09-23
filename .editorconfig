@@ -12,6 +12,9 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
 [*.md]
 max_line_length = off
 trim_trailing_whitespace = false

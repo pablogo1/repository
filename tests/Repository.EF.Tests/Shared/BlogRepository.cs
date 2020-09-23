@@ -23,7 +23,7 @@ namespace Repository.EF.Tests.Shared
         public async Task<Blog> GetBlogWithAllPostsAsync(int blogId)
         {
             return await GetBlogWithAllPostsQuery
-                .SingleOrDefaultAsync(o => o.BlogId == blogId);
+                .SingleOrDefaultAsync(o => o.BlogId == blogId).ConfigureAwait(false);
         }
 
         private IQueryable<Blog> GetBlogWithAllPostsQuery => DbContext

@@ -43,13 +43,17 @@ namespace Repository.EF.Tests.Shared
 
                     if (!dbContext.Blogs.Any())
                     {
+                        var blog1 = new Blog
+                        {
+                            BlogId = 1,
+                            Url = "test"
+                        };
+                        blog1.Posts.Add(new Post { PostId = 1, BlogId = 1, Title = "Blog 1 Post 1" });
+                        blog1.Posts.Add(new Post { PostId = 2, BlogId = 1, Title = "Blog 1 Post 2" });
+                        blog1.Posts.Add(new Post { PostId = 3, BlogId = 1, Title = "Blog 1 Post 3" });
+
                         dbContext.Blogs.AddRange(new Blog[] {
-                            new Blog { BlogId = 1, Url = "test", Posts = new HashSet<Post> {
-                                new Post { PostId = 1, BlogId = 1, Title = "Blog 1 Post 1" },
-                                new Post { PostId = 2, BlogId = 1, Title = "Blog 1 Post 2" },
-                                new Post { PostId = 3, BlogId = 1, Title = "Blog 1 Post 3" }
-                            } 
-                            },
+                            blog1,
                             new Blog { BlogId = 2, Url = "test 2" },
                             new Blog { BlogId = 3, Url = "test 3" },
                             new Blog { BlogId = 4, Url = "test 4" },
@@ -65,9 +69,6 @@ namespace Repository.EF.Tests.Shared
                     if (!dbContext.Posts.Any())
                     {
                         dbContext.Posts.AddRange(new Post[] {
-                            // new Post { PostId = 1, BlogId = 1, Title = "Blog 1 Post 1" },
-                            // new Post { PostId = 2, BlogId = 1, Title = "Blog 1 Post 2" },
-                            // new Post { PostId = 3, BlogId = 1, Title = "Blog 1 Post 3" },
                             new Post { PostId = 4, BlogId = 2, Title = "Blog 2 Post 1" },
                             new Post { PostId = 5, BlogId = 2, Title = "Blog 2 Post 2" },
                             new Post { PostId = 6, BlogId = 2, Title = "Blog 2 Post 3" }
