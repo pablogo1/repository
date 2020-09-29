@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Repository.Core;
@@ -22,9 +23,9 @@ namespace Repository.EF
             return All(null);
         }
 
-        public async Task<IEnumerable<TEntity>> AllAsync()
+        public async Task<IEnumerable<TEntity>> AllAsync(CancellationToken cancellationToken = default)
         {
-            return await AllAsync(null);
+            return await AllAsync(null, cancellationToken);
         }
 
         public IEnumerable<TEntity> All(int pageIndex, int pageSize)
@@ -34,11 +35,11 @@ namespace Repository.EF
             return All(pagingOptions);
         }
 
-        public async Task<IEnumerable<TEntity>> AllAsync(int pageIndex, int pageSize)
+        public async Task<IEnumerable<TEntity>> AllAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
             var pagingOptions = PagingOptions.Create(pageIndex, pageSize);
 
-            return await AllAsync(pagingOptions);
+            return await AllAsync(pagingOptions, cancellationToken);
         }
 
         public IEnumerable<TEntity> All(PagingOptions pagingOptions)
@@ -48,11 +49,11 @@ namespace Repository.EF
                 .ToList();
         }
 
-        public async Task<IEnumerable<TEntity>> AllAsync(PagingOptions pagingOptions)
+        public async Task<IEnumerable<TEntity>> AllAsync(PagingOptions pagingOptions, CancellationToken cancellationToken = default)
         {
             return await DbContext.Set<TEntity>()
                 .Page(pagingOptions)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
@@ -60,9 +61,9 @@ namespace Repository.EF
             return Find(predicate, null);
         }
 
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await FindAsync(predicate, null);
+            return await FindAsync(predicate, null, cancellationToken);
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize)
@@ -76,11 +77,11 @@ namespace Repository.EF
             return Find(predicate, pagingOptions);
         }
 
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
             var pagingOptions = PagingOptions.Create(pageIndex, pageSize);
 
-            return await FindAsync(predicate, pagingOptions);
+            return await FindAsync(predicate, pagingOptions, cancellationToken);
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, PagingOptions pagingOptions)
@@ -91,12 +92,12 @@ namespace Repository.EF
                 .ToList();
         }
 
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, PagingOptions pagingOptions)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, PagingOptions pagingOptions, CancellationToken cancellationToken = default)
         {
             return await DbContext.Set<TEntity>()
                 .Where(predicate)
                 .Page(pagingOptions)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         public TEntity GetById(TId id)
@@ -104,9 +105,9 @@ namespace Repository.EF
             return DbContext.Set<TEntity>().Find(id);
         }
 
-        public async Task<TEntity> GetByIdAsync(TId id)
+        public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
         {
-            return await DbContext.Set<TEntity>().FindAsync(id);
+            return await DbContext.Set<TEntity>().FindAsync(new object[] { id }, cancellationToken);
         }
 
         protected DbContext DbContext { get; }

@@ -151,12 +151,13 @@ namespace Repository.EF.Tests
         public async Task FindAsync_ReturnsAllItemsThatMatchesPredicate()
         {
             //Arrange
-            var expectedBlogs = dbContext.Blogs.Where(b => b.BlogId % 2 != 0)
+            var expectedBlogs = dbContext.Blogs.Where(b => b.BlogId % 2 != 0 && b.BlogId <= 9)
                 .ToList();
             var expectedItemCount = expectedBlogs.Count;
 
             //Act
-            var actualBlogs = await repository.FindAsync(b => b.BlogId % 2 != 0).ConfigureAwait(false);
+            var actualBlogs = await repository.FindAsync(b => b.BlogId % 2 != 0 && b.BlogId <= 9)
+                .ConfigureAwait(false);
 
             //Assert
             Assert.NotNull(actualBlogs);

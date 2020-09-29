@@ -1,13 +1,9 @@
-using Repository.EF;
 using Repository.EF.Tests.Model;
 using Repository.EF.Tests.Shared;
 using Xunit;
-using Moq;
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using System.Threading;
 
 namespace Repository.EF.Tests
 {

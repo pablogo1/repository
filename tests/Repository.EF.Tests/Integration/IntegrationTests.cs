@@ -13,7 +13,6 @@ namespace Repository.EF.Tests.Integration
     {
         private readonly TestDataContext dataContext;
         private readonly IBlogRepository blogRepository;
-        private readonly IPostRepository postRepository;
         
         public IntegrationTests(TestDatabaseFixture fixture)
         {
@@ -24,7 +23,6 @@ namespace Repository.EF.Tests.Integration
 
             dataContext = fixture.DataContextFactory.CreateTestDataContext();
             blogRepository = dataContext.BlogRepository;
-            postRepository = dataContext.PostRepository;
         }
 
         [Fact]
@@ -33,15 +31,15 @@ namespace Repository.EF.Tests.Integration
             const int newBlogId = 888;
             var newBlog = CreateBlog(newBlogId);
 
-            await blogRepository.AddAsync(newBlog);
-            await dataContext.CommitAsync();
+            await blogRepository.AddAsync(newBlog).ConfigureAwait(false);
+            await dataContext.CommitAsync().ConfigureAwait(false);
 
             var savedBlog = await dataContext.DbContext.Blogs.FindAsync(newBlogId).ConfigureAwait(false);
             Assert.NotNull(newBlog);
             Assert.Equal(newBlog, savedBlog);
             Assert.NotEmpty(newBlog.Posts);
 
-            await DeleteBlogFromDbContextAsync(savedBlog);
+            await DeleteBlogFromDbContextAsync(savedBlog).ConfigureAwait(false);
         }
 
         [Fact]
@@ -65,9 +63,9 @@ namespace Repository.EF.Tests.Integration
         public async Task RetrieveExistingBlogByIdAsync()
         {
             const int blogId = 1;
-            var expectedBlog = await dataContext.DbContext.Blogs.FindAsync(blogId);
+            var expectedBlog = await dataContext.DbContext.Blogs.FindAsync(blogId).ConfigureAwait(false);
 
-            var actualBlog = await blogRepository.GetByIdAsync(blogId);
+            var actualBlog = await blogRepository.GetByIdAsync(blogId).ConfigureAwait(false);
 
             Assert.NotNull(actualBlog);
             Assert.Equal(expectedBlog, actualBlog);
@@ -90,7 +88,7 @@ namespace Repository.EF.Tests.Integration
         {
             var expectedBlogs = dataContext.DbContext.Blogs.ToList();
 
-            var actualBlogs = await blogRepository.AllAsync();
+            var actualBlogs = await blogRepository.AllAsync().ConfigureAwait(false);
 
             Assert.NotNull(actualBlogs);
             Assert.Equal(expectedBlogs, actualBlogs);
@@ -115,7 +113,8 @@ namespace Repository.EF.Tests.Integration
 
             var expectedBlogs = dataContext.DbContext.Blogs.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList();
 
-            var actualBlogs = await blogRepository.AllAsync(pageIndex, pageSize);
+            var actualBlogs = await blogRepository.AllAsync(pageIndex, pageSize)
+                .ConfigureAwait(false);
 
             Assert.NotNull(actualBlogs);
             Assert.Equal(expectedBlogs, actualBlogs);
@@ -132,7 +131,7 @@ namespace Repository.EF.Tests.Integration
             var actualBlogs = blogRepository.All(pageIndex, pageSize);
             
             Assert.NotNull(actualBlogs);
-            Assert.NotEqual(expectedBlogs, actualBlogs);
+            Assert.Equal(expectedBlogs, actualBlogs);
         }
 
         [Fact]
@@ -279,7 +278,7 @@ namespace Repository.EF.Tests.Integration
         private async Task DeleteBlogFromDbContextAsync(Blog blog)
         {
             dataContext.DbContext.Blogs.Remove(blog);
-            await dataContext.DbContext.SaveChangesAsync();
+            await dataContext.DbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private void DeleteBlogFromDbContext(Blog blog) => DeleteBlogFromDbContextAsync(blog).ConfigureAwait(false).GetAwaiter().GetResult();

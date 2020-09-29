@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Repository.Core;
@@ -18,7 +19,7 @@ namespace Repository.EF
             DbContext.Add(entity);
         }
 
-        public async Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             await DbContext.AddAsync(entity);
         }
@@ -28,7 +29,7 @@ namespace Repository.EF
             DbContext.AddRange(entities);
         }
 
-        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             await DbContext.AddRangeAsync(entities);
         }
